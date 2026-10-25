@@ -16,11 +16,12 @@ const chartInner   = document.getElementById("chart-inner");
 const emptyState   = document.getElementById("empty-state");
 
 // Stat elements
-const statAvg   = document.getElementById("stat-avg");
-const statAvg7  = document.getElementById("stat-avg7");
-const statCount = document.getElementById("stat-count");
-const statBest  = document.getElementById("stat-best");
-const statLow   = document.getElementById("stat-low");
+const statAvg    = document.getElementById("stat-avg");
+const statAvg7   = document.getElementById("stat-avg7");
+const statCount  = document.getElementById("stat-count");
+const statBest   = document.getElementById("stat-best");
+const statLow    = document.getElementById("stat-low");
+const statDanger = document.getElementById("stat-danger");
 
 // ─── State ─────────────────────────────────────────────────────────
 let entries = [];       // all mood entries, kept in sync
@@ -152,11 +153,12 @@ async function refreshAll() {
 
 function updateStats(data) {
   if (data.length === 0) {
-    statAvg.textContent   = "—";
-    statAvg7.textContent  = "—";
-    statCount.textContent = "0";
-    statBest.textContent  = "—";
-    statLow.textContent   = "—";
+    statAvg.textContent    = "—";
+    statAvg7.textContent   = "—";
+    statCount.textContent  = "0";
+    statBest.textContent   = "—";
+    statLow.textContent    = "—";
+    statDanger.textContent = "0";
     return;
   }
 
@@ -179,9 +181,42 @@ function updateStats(data) {
   // Lowest day
   const low = data.reduce((a, b) => (b.mood < a.mood ? b : a));
   statLow.textContent = shortDate(low.day);
+
+  // Danger days: mood ≤ 4  OR  mood ≥ 8 (outside the safe 4–8 band)
+  const dangerCount = data.filter(e => e.mood <= 4 || e.mood >= 8).length;
+  statDanger.textContent = dangerCount;
 }
 
 // ─── Chart ─────────────────────────────────────────────────────────
+
+/**
+ * Chart.js plugin: paints coloured horizontal bands behind the chart.
+ *   0–4  → transparent red   (danger zone — too low)
+ *   4–8  → transparent green (safe zone)
+ *   8–10 → transparent red   (danger zone — too high)
+ */
+const zoneBackgroundPlugin = {
+  id: "zoneBackground",
+  beforeDraw(chart) {
+    const { ctx, chartArea: { left, right, top, bottom }, scales: { y } } = chart;
+
+    // Helper: fill a horizontal band between two mood values
+    function fillBand(low, high, colour) {
+      const yTop    = y.getPixelForValue(high);
+      const yBottom = y.getPixelForValue(low);
+      ctx.fillStyle = colour;
+      ctx.fillRect(left, yTop, right - left, yBottom - yTop);
+    }
+
+    ctx.save();
+    fillBand(0, 4,  "rgba(214, 60, 60, 0.08)");   // red — low mood danger
+    fillBand(4, 8,  "rgba(46, 158, 90, 0.08)");    // green — safe zone
+    fillBand(8, 10, "rgba(214, 60, 60, 0.08)");    // red — high mood danger
+    ctx.restore();
+  }
+};
+
+Chart.register(zoneBackgroundPlugin);
 
 /**
  * Chart.js plugin: draws a dashed horizontal line at the mean mood.

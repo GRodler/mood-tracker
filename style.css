@@ -236,6 +236,11 @@ header p {
   margin-top: 0.2rem;
 }
 
+/* Danger-days card: subtle red tint */
+.stat-card--danger .stat-value {
+  color: #d63c3c;
+}
+
 /* ─── Chart section ────────────────────────────────────────────── */
 .chart-section h2 {
   font-size: 1.1rem;
