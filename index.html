@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vibe — mood tracker</title>
+
+  <!-- Google Fonts: Inter for a clean look -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- App styles -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Favicon: simple orange circle emoji as an SVG data-URI -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌤️</text></svg>" />
+</head>
+<body>
+  <div class="container">
+
+    <!-- ─── Header ──────────────────────────────────────────── -->
+    <header>
+      <h1>🌤️ vibe</h1>
+      <p>track your mood, one day at a time</p>
+    </header>
+
+    <!-- ─── Entry Form ──────────────────────────────────────── -->
+    <section class="card" id="entry-form">
+      <div class="form-grid">
+        <!-- Date picker -->
+        <div class="form-group">
+          <label for="input-date">Date</label>
+          <input type="date" id="input-date" />
+        </div>
+
+        <!-- Mood slider -->
+        <div class="form-group">
+          <label>Mood</label>
+          <div class="slider-row">
+            <input
+              type="range"
+              id="input-mood"
+              min="0" max="10" step="0.5" value="5"
+            />
+            <span class="mood-value" id="mood-display">5</span>
+          </div>
+        </div>
+
+        <!-- Note -->
+        <div class="form-group">
+          <label for="input-note">Note <span style="font-weight:400;text-transform:none">(optional)</span></label>
+          <textarea
+            id="input-note"
+            maxlength="500"
+            placeholder="What's on your mind?"
+          ></textarea>
+          <div class="char-count"><span id="char-current">0</span>/500</div>
+        </div>
+
+        <!-- Save button -->
+        <button class="btn-save" id="btn-save">Save</button>
+        <div class="save-feedback" id="save-feedback"></div>
+      </div>
+    </section>
+
+    <!-- ─── Stats ───────────────────────────────────────────── -->
+    <section class="stats-grid" id="stats-section">
+      <div class="stat-card">
+        <div class="stat-value" id="stat-avg">—</div>
+        <div class="stat-label">All-time avg</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-avg7">—</div>
+        <div class="stat-label">Last 7 days</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-count">0</div>
+        <div class="stat-label">Days logged</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-best">—</div>
+        <div class="stat-label">Best day</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-low">—</div>
+        <div class="stat-label">Lowest day</div>
+      </div>
+    </section>
+
+    <!-- ─── Chart ───────────────────────────────────────────── -->
+    <section class="card chart-section">
+      <h2>📈 Mood over time</h2>
+      <div class="chart-scroll" id="chart-scroll">
+        <div class="chart-inner" id="chart-inner">
+          <canvas id="mood-chart"></canvas>
+        </div>
+      </div>
+      <div class="empty-state" id="empty-state" style="display:none;">
+        No entries yet — log your first mood above!
+      </div>
+    </section>
+
+  </div><!-- .container -->
+
+  <!-- ─── External libraries (CDN) ─────────────────────────── -->
+  <!-- Chart.js for the line graph -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <!-- Supabase client library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- ─── App scripts (order matters) ──────────────────────── -->
+  <script src="config.js"></script>   <!-- credentials (filled in by user) -->
+  <script src="db.js"></script>       <!-- Supabase wrapper functions -->
+  <script src="app.js"></script>      <!-- UI logic, chart, stats -->
+</body>
+</html>

@@ -1,0 +1,290 @@
+/* ─── CSS Variables & Reset ─────────────────────────────────────── */
+:root {
+  --accent: #F29100;
+  --accent-light: #fdb644;
+  --bg: #faf9f7;
+  --surface: #ffffff;
+  --text: #2c2c2c;
+  --text-muted: #777;
+  --border: #e4e0db;
+  --radius: 14px;
+  --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ─── Dark mode (auto, follows system preference) ──────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1a1d;
+    --surface: #26262b;
+    --text: #e8e6e3;
+    --text-muted: #9a9a9a;
+    --border: #3a3a3f;
+    --shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* ─── Base ─────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100dvh;
+  padding: 1rem;
+  padding-bottom: 3rem;
+}
+
+/* ─── Layout container ─────────────────────────────────────────── */
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* ─── Header ───────────────────────────────────────────────────── */
+header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+header p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+/* ─── Card (shared style for form, stats, chart) ───────────────── */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+/* ─── Entry Form ───────────────────────────────────────────────── */
+.form-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.form-group input[type="date"],
+.form-group textarea {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  transition: border-color 0.2s;
+}
+
+.form-group input[type="date"]:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 60px;
+  max-height: 140px;
+}
+
+/* Slider row */
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.slider-row input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--border);
+  outline: none;
+}
+
+.slider-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 3px solid var(--surface);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+}
+
+.slider-row input[type="range"]::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 3px solid var(--surface);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+}
+
+.mood-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  min-width: 2.6ch;
+  text-align: center;
+  color: var(--accent);
+  line-height: 1;
+}
+
+/* Character counter */
+.char-count {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: right;
+  margin-top: 0.2rem;
+}
+
+/* Save button */
+.btn-save {
+  display: block;
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-family: var(--font);
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-save:hover { background: #d97f00; }
+.btn-save:active { transform: scale(0.98); }
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Feedback message */
+.save-feedback {
+  text-align: center;
+  font-size: 0.9rem;
+  min-height: 1.4em;
+  margin-top: 0.5rem;
+  transition: opacity 0.3s;
+}
+
+.save-feedback.success { color: #2e9e5a; }
+.save-feedback.error   { color: #d63c3c; }
+
+/* ─── Stats cards row ──────────────────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+  gap: 0.75rem;
+}
+
+.stat-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 0.85rem 0.7rem;
+  text-align: center;
+}
+
+.stat-card .stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.15;
+}
+
+.stat-card .stat-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 0.2rem;
+}
+
+/* ─── Chart section ────────────────────────────────────────────── */
+.chart-section h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Scrollable wrapper for the chart */
+.chart-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 10px;
+  background: var(--surface);
+  /* Hide ugly scrollbar on desktop, still scrollable */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.chart-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.chart-scroll::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.chart-inner {
+  /* Width is set dynamically by JS (max of 100% or days * 56px) */
+  min-width: 100%;
+  height: 320px;
+  position: relative;
+}
+
+/* ─── Empty state ──────────────────────────────────────────────── */
+.empty-state {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2rem 0.5rem;
+  font-size: 0.95rem;
+}
+
+/* ─── Loading spinner ──────────────────────────────────────────── */
+.loading {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2rem;
+}
+
+/* ─── Responsive tweaks ────────────────────────────────────────── */
+@media (min-width: 500px) {
+  body { padding: 2rem; }
+  .card { padding: 1.5rem; }
+}
