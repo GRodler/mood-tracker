@@ -106,6 +106,23 @@
       <div class="empty-state" id="empty-state" style="display:none;">
         No entries yet — log your first mood above!
       </div>
+
+      <!-- ─── Export buttons ─────────────────────────────────── -->
+      <div class="export-bar" id="export-bar">
+        <span class="export-label">Export</span>
+        <button class="btn-export" id="btn-csv" title="Download data as CSV">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2M5 7l3 3 3-3M8 10V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          CSV
+        </button>
+        <button class="btn-export" id="btn-txt" title="Download data as TXT">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2M5 7l3 3 3-3M8 10V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          TXT
+        </button>
+        <button class="btn-export" id="btn-pdf" title="Export chart as PDF">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 1h5l4 4v9a1 1 0 01-1 1H4a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 1v4h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          PDF
+        </button>
+      </div>
     </section>
 
   </div><!-- .container -->
@@ -113,6 +130,8 @@
   <!-- ─── External libraries (CDN) ─────────────────────────── -->
   <!-- Chart.js for the line graph -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <!-- jsPDF for PDF export (must use the UMD build for <script> tags) -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2/dist/jspdf.umd.min.js"></script>
   <!-- Supabase client library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 

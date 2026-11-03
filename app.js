@@ -419,3 +419,160 @@ window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () 
 // ─── Boot ──────────────────────────────────────────────────────────
 // Load data as soon as the page is ready.
 refreshAll();
+
+// ─── Export: CSV ────────────────────────────────────────────────────
+
+document.getElementById("btn-csv").addEventListener("click", () => {
+  if (entries.length === 0) { showFeedback("No data to export.", false); return; }
+
+  const header = "date,mood,note";
+  const rows = entries.map(e => {
+    // Wrap the note in quotes and escape any internal quotes
+    const safeNote = '"' + (e.note || "").replace(/"/g, '""') + '"';
+    return `${e.day},${e.mood},${safeNote}`;
+  });
+  const csv = [header, ...rows].join("\n");
+
+  downloadFile(csv, "vibe-mood-data.csv", "text/csv");
+});
+
+// ─── Export: TXT ────────────────────────────────────────────────────
+
+document.getElementById("btn-txt").addEventListener("click", () => {
+  if (entries.length === 0) { showFeedback("No data to export.", false); return; }
+
+  const lines = [
+    "vibe — mood tracker data",
+    "Exported: " + new Date().toLocaleString(),
+    "─".repeat(40),
+    "",
+  ];
+
+  entries.forEach(e => {
+    lines.push(`${longDate(e.day)}  |  Mood: ${e.mood}`);
+    if (e.note) lines.push(`  📝 ${e.note}`);
+    lines.push("");
+  });
+
+  // Summary
+  const avg = round1(entries.reduce((s, e) => s + e.mood, 0) / entries.length);
+  lines.push("─".repeat(40));
+  lines.push(`Total entries: ${entries.length}`);
+  lines.push(`All-time average: ${avg}`);
+
+  downloadFile(lines.join("\n"), "vibe-mood-data.txt", "text/plain");
+});
+
+// ─── Export: PDF (chart image) ──────────────────────────────────────
+
+document.getElementById("btn-pdf").addEventListener("click", () => {
+  if (!moodChart || entries.length === 0) {
+    showFeedback("No chart to export.", false);
+    return;
+  }
+
+  try {
+    // --- Build a clean B&W chart on an offscreen canvas ---
+    const offCanvas = document.createElement("canvas");
+    offCanvas.width  = 1200;
+    offCanvas.height = 500;
+
+    const labels = entries.map(e => shortDate(e.day));
+    const moods  = entries.map(e => e.mood);
+
+    const offChart = new Chart(offCanvas, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          label: "Mood",
+          data: moods,
+          borderColor: "#000",
+          backgroundColor: "transparent",
+          pointBackgroundColor: "#000",
+          pointBorderColor: "#000",
+          pointRadius: 4,
+          borderWidth: 2,
+          tension: 0.3,
+          fill: false,
+        }],
+      },
+      options: {
+        responsive: false,
+        animation: false,
+        plugins: {
+          legend: { display: false },
+          meanLine: false,         // disable the orange dashed line
+          zoneBackground: false,   // disable the coloured bands
+        },
+        scales: {
+          y: {
+            min: 0, max: 10,
+            ticks: { stepSize: 2, color: "#333", font: { size: 13 } },
+            grid: { color: "#ddd" },
+            border: { color: "#999" },
+          },
+          x: {
+            ticks: { color: "#333", font: { size: 11 }, maxRotation: 45, minRotation: 0 },
+            grid: { display: false },
+            border: { color: "#999" },
+          },
+        },
+      },
+      plugins: [],   // no custom plugins for this instance
+    });
+
+    const imgData = offCanvas.toDataURL("image/png", 1);
+    offChart.destroy();
+
+    // --- Assemble PDF ---
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+    const margin = 15;
+
+    // Title
+    doc.setFontSize(16);
+    doc.setTextColor("#000");
+    doc.text("Mood over time", margin, margin + 4);
+
+    // Date range
+    doc.setFontSize(10);
+    doc.setTextColor("#555");
+    const first = longDate(entries[0].day);
+    const last  = longDate(entries[entries.length - 1].day);
+    const avg   = round1(entries.reduce((s, e) => s + e.mood, 0) / entries.length);
+    doc.text(`${first} to ${last}  |  ${entries.length} entries  |  avg ${avg}`, margin, margin + 11);
+
+    // Chart image
+    const imgTop = margin + 16;
+    const imgW = pageW - margin * 2;
+    const imgH = pageH - imgTop - margin;
+    doc.addImage(imgData, "PNG", margin, imgTop, imgW, imgH);
+
+    doc.save("vibe-mood-chart.pdf");
+  } catch (err) {
+    console.error("PDF export failed:", err);
+    showFeedback("PDF error: " + err.message, false);
+  }
+});
+
+// ─── Download helper ────────────────────────────────────────────────
+
+/** Trigger a browser download for a text blob. */
+function downloadFile(content, filename, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  // Clean up
+  requestAnimationFrame(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+}

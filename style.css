@@ -293,3 +293,52 @@ header p {
   body { padding: 2rem; }
   .card { padding: 1.5rem; }
 }
+
+/* ─── Export bar ───────────────────────────────────────────────── */
+.export-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.export-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: 0.25rem;
+}
+
+.btn-export {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.1s;
+}
+
+.btn-export:hover {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
+.btn-export:active {
+  transform: scale(0.96);
+}
+
+.btn-export svg {
+  flex-shrink: 0;
+}
