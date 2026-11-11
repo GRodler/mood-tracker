@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vibe — mood tracker</title>
+
+  <!-- Google Fonts: Inter for a clean look -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- App styles -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Favicon: simple orange circle emoji as an SVG data-URI -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌤️</text></svg>" />
+</head>
+<body>
+  <div class="container">
+
+    <!-- ─── Header ──────────────────────────────────────────── -->
+    <header>
+      <h1>🌤️ vibe</h1>
+      <p>track your mood, one day at a time</p>
+    </header>
+
+    <!-- ─── Habit Checklist ─────────────────────────────────── -->
+    <section class="card habit-checklist-section" id="habit-checklist-section">
+      <h2>🔥 Habits</h2>
+      <div class="habit-list-container">
+        <div id="habit-list" class="habit-list"></div>
+        <div class="empty-state" id="habits-empty-state" style="display: none;">
+          No habits yet — start building your first streak below!
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Entry Form ──────────────────────────────────────── -->
+    <section class="card" id="entry-form">
+      <div class="form-grid">
+        <!-- Date picker -->
+        <div class="form-group">
+          <label for="input-date">Date</label>
+          <input type="date" id="input-date" />
+        </div>
+
+        <!-- Mood slider -->
+        <div class="form-group">
+          <label>Mood</label>
+          <div class="slider-row">
+            <input
+              type="range"
+              id="input-mood"
+              min="0" max="10" step="0.5" value="5"
+            />
+            <span class="mood-value" id="mood-display">5</span>
+          </div>
+        </div>
+
+        <!-- Note -->
+        <div class="form-group">
+          <label for="input-note">Note <span style="font-weight:400;text-transform:none">(optional)</span></label>
+          <textarea
+            id="input-note"
+            maxlength="500"
+            placeholder="What's on your mind?"
+          ></textarea>
+          <div class="char-count"><span id="char-current">0</span>/500</div>
+        </div>
+
+        <!-- Save button -->
+        <button class="btn-save" id="btn-save">Save</button>
+        <div class="save-feedback" id="save-feedback"></div>
+      </div>
+    </section>
+
+    <!-- ─── Stats ───────────────────────────────────────────── -->
+    <section class="stats-grid" id="stats-section">
+      <div class="stat-card">
+        <div class="stat-value" id="stat-avg">—</div>
+        <div class="stat-label">All-time avg</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-avg7">—</div>
+        <div class="stat-label">Last 7 days</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-count">0</div>
+        <div class="stat-label">Days logged</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-best">—</div>
+        <div class="stat-label">Best day</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-low">—</div>
+        <div class="stat-label">Lowest day</div>
+      </div>
+      <div class="stat-card stat-card--danger">
+        <div class="stat-value" id="stat-danger">0</div>
+        <div class="stat-label">Danger days</div>
+      </div>
+    </section>
+
+    <!-- ─── Chart ───────────────────────────────────────────── -->
+    <section class="card chart-section">
+      <h2>📈 Mood over time</h2>
+      <div class="chart-scroll" id="chart-scroll">
+        <div class="chart-inner" id="chart-inner">
+          <canvas id="mood-chart"></canvas>
+        </div>
+      </div>
+      <div class="empty-state" id="empty-state" style="display:none;">
+        No entries yet — log your first mood above!
+      </div>
+
+      <!-- ─── Export buttons ─────────────────────────────────── -->
+      <div class="export-bar" id="export-bar">
+        <span class="export-label">Export</span>
+        <button class="btn-export" id="btn-csv" title="Download data as CSV">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2M5 7l3 3 3-3M8 10V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          CSV
+        </button>
+        <button class="btn-export" id="btn-txt" title="Download data as TXT">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2M5 7l3 3 3-3M8 10V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          TXT
+        </button>
+        <button class="btn-export" id="btn-pdf" title="Export chart as PDF">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 1h5l4 4v9a1 1 0 01-1 1H4a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 1v4h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          PDF
+        </button>
+      </div>
+    </section>
+
+    <!-- ─── Habits ──────────────────────────────────────────── -->
+    <section class="card habits-section" id="habits-section">
+      <h2>➕ Add habit</h2>
+
+      <!-- Add habit form -->
+      <form id="form-habit" class="habit-form">
+        <div class="form-group">
+          <label for="input-habit-name">Habit name</label>
+          <input
+            type="text"
+            id="input-habit-name"
+            maxlength="60"
+            placeholder="e.g. Morning meditation, Exercise..."
+            required
+          />
+        </div>
+
+        <div class="streak-toggle-row">
+          <label class="checkbox-label" for="check-existing-streak">
+            <input type="checkbox" id="check-existing-streak" />
+            <span>I'm already on a streak</span>
+          </label>
+        </div>
+
+        <div class="form-group streak-days-group" id="streak-days-group" style="display: none;">
+          <label for="input-streak-days">Current streak (days)</label>
+          <input
+            type="number"
+            id="input-streak-days"
+            min="1"
+            max="3650"
+            value="1"
+          />
+        </div>
+
+        <button type="submit" class="btn-save" id="btn-add-habit">Add habit</button>
+        <div class="save-feedback" id="habit-feedback"></div>
+      </form>
+    </section>
+
+    <!-- ─── Brain ───────────────────────────────────────────── -->
+    <section class="card brain-section" id="brain-section">
+      <h2>🧠 Brain</h2>
+      <div class="brain-card-content">
+        <div class="brain-viz-wrap">
+          <div id="brain-svg-container" class="brain-svg-container"></div>
+          <div class="brain-caption" aria-hidden="true">
+            <span class="brain-caption-title">Fully lit at 100 days</span>
+            <div class="brain-scale">
+              <span class="brain-scale-tag">0d</span>
+              <div class="brain-scale-line"></div>
+              <span class="brain-scale-tag">66d</span>
+              <div class="brain-scale-line"></div>
+              <span class="brain-scale-tag">100d+</span>
+            </div>
+          </div>
+        </div>
+        <div class="brain-legend-wrap">
+          <div id="brain-legend" class="brain-legend"></div>
+          <div id="brain-empty-state" class="brain-empty-legend" style="display: none;">
+            Add a habit to start growing your brain.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- .container -->
+
+  <!-- ─── External libraries (CDN) ─────────────────────────── -->
+  <!-- Chart.js for the line graph -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <!-- jsPDF for PDF export (must use the UMD build for <script> tags) -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2/dist/jspdf.umd.min.js"></script>
+  <!-- Supabase client library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- ─── App scripts (order matters) ──────────────────────── -->
+  <script src="config.js"></script>   <!-- credentials (filled in by user) -->
+  <script src="db.js"></script>       <!-- Supabase wrapper functions -->
+  <script src="app.js"></script>      <!-- UI logic, chart, stats -->
+  <script src="habits.js"></script>   <!-- Habit tracking, streaks -->
+  <script src="brain.js"></script>    <!-- Neural pathway brain visualization -->
+</body>
+</html>

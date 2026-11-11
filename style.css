@@ -1,0 +1,783 @@
+/* ─── CSS Variables & Reset ─────────────────────────────────────── */
+:root {
+  --accent: #F29100;
+  --accent-light: #fdb644;
+  --bg: #faf9f7;
+  --surface: #ffffff;
+  --text: #2c2c2c;
+  --text-muted: #777;
+  --border: #e4e0db;
+  --radius: 14px;
+  --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --brain-outline: #e98fb5;
+  --brain-fill: rgba(233, 143, 181, 0.05);
+  --brain-folds: rgba(233, 143, 181, 0.4);
+}
+
+/* ─── Dark mode (auto, follows system preference) ──────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1a1d;
+    --surface: #26262b;
+    --text: #e8e6e3;
+    --text-muted: #9a9a9a;
+    --border: #3a3a3f;
+    --shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    --brain-outline: #f497be;
+    --brain-fill: rgba(244, 151, 190, 0.08);
+    --brain-folds: rgba(244, 151, 190, 0.45);
+  }
+}
+
+/* ─── Base ─────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100dvh;
+  padding: 1rem;
+  padding-bottom: 3rem;
+}
+
+/* ─── Layout container ─────────────────────────────────────────── */
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* ─── Header ───────────────────────────────────────────────────── */
+header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+header p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+/* ─── Card (shared style for form, stats, chart) ───────────────── */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+/* ─── Entry Form ───────────────────────────────────────────────── */
+.form-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.form-group input[type="date"],
+.form-group textarea {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  transition: border-color 0.2s;
+}
+
+.form-group input[type="date"]:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 60px;
+  max-height: 140px;
+}
+
+/* Slider row */
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.slider-row input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--border);
+  outline: none;
+}
+
+.slider-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 3px solid var(--surface);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+}
+
+.slider-row input[type="range"]::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 3px solid var(--surface);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+}
+
+.mood-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  min-width: 2.6ch;
+  text-align: center;
+  color: var(--accent);
+  line-height: 1;
+}
+
+/* Character counter */
+.char-count {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: right;
+  margin-top: 0.2rem;
+}
+
+/* Save button */
+.btn-save {
+  display: block;
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-family: var(--font);
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-save:hover { background: #d97f00; }
+.btn-save:active { transform: scale(0.98); }
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Feedback message */
+.save-feedback {
+  text-align: center;
+  font-size: 0.9rem;
+  min-height: 1.4em;
+  margin-top: 0.5rem;
+  transition: opacity 0.3s;
+}
+
+.save-feedback.success { color: #2e9e5a; }
+.save-feedback.error   { color: #d63c3c; }
+
+/* ─── Stats cards row ──────────────────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+  gap: 0.75rem;
+}
+
+.stat-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 0.85rem 0.7rem;
+  text-align: center;
+}
+
+.stat-card .stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.15;
+}
+
+.stat-card .stat-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 0.2rem;
+}
+
+/* Danger-days card: subtle red tint */
+.stat-card--danger .stat-value {
+  color: #d63c3c;
+}
+
+/* ─── Chart section ────────────────────────────────────────────── */
+.chart-section h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Scrollable wrapper for the chart */
+.chart-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 10px;
+  background: var(--surface);
+  /* Hide ugly scrollbar on desktop, still scrollable */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.chart-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.chart-scroll::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.chart-inner {
+  /* Width is set dynamically by JS (max of 100% or days * 56px) */
+  min-width: 100%;
+  height: 320px;
+  position: relative;
+}
+
+/* ─── Empty state ──────────────────────────────────────────────── */
+.empty-state {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2rem 0.5rem;
+  font-size: 0.95rem;
+}
+
+/* ─── Loading spinner ──────────────────────────────────────────── */
+.loading {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2rem;
+}
+
+/* ─── Responsive tweaks ────────────────────────────────────────── */
+@media (min-width: 500px) {
+  body { padding: 2rem; }
+  .card { padding: 1.5rem; }
+}
+
+/* ─── Export bar ───────────────────────────────────────────────── */
+.export-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.export-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: 0.25rem;
+}
+
+.btn-export {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.1s;
+}
+
+.btn-export:hover {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
+.btn-export:active {
+  transform: scale(0.96);
+}
+
+.btn-export svg {
+  flex-shrink: 0;
+}
+
+/* ─── Habit Checklist section (above mood form) ─────────────────── */
+.habit-checklist-section h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.habit-checklist-section .habit-list-container {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* ─── Habits section ───────────────────────────────────────────── */
+.habits-section h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.habit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.habit-form .form-group input[type="text"],
+.habit-form .form-group input[type="number"] {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  transition: border-color 0.2s;
+}
+
+.habit-form .form-group input[type="text"]:focus,
+.habit-form .form-group input[type="number"]:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.streak-toggle-row {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* Habit List */
+.habit-list-container {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.habit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.habit-item {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: border-color 0.2s;
+}
+
+.habit-item:hover {
+  border-color: var(--accent-light);
+}
+
+.habit-main-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.habit-check-wrap {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.habit-check {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.habit-name {
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.habit-streak {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.15;
+}
+
+.streak-current {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.streak-best {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.btn-archive {
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--font);
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.btn-archive:hover {
+  color: #d63c3c;
+  border-color: #d63c3c;
+  background: rgba(214, 60, 60, 0.08);
+}
+
+/* 7-day consistency dots */
+.habit-dots-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 1.85rem;
+}
+
+.habit-dots-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.habit-dots {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.habit-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  transition: all 0.2s;
+}
+
+.habit-dot.done {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.habit-dot.today {
+  box-shadow: 0 0 0 1.5px var(--accent-light);
+}
+
+/* ─── Brain section ────────────────────────────────────────────── */
+.brain-section h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.85rem;
+}
+
+.brain-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Responsive layout: row on larger mobile/desktop */
+@media (min-width: 500px) {
+  .brain-card-content {
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+  }
+}
+
+.brain-viz-wrap {
+  flex: 1.15;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+.brain-svg-container {
+  width: 100%;
+  max-width: 350px;
+  position: relative;
+}
+
+.brain-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Brain outline and internal gyri styling */
+.brain-cortex-outline {
+  fill: var(--brain-fill);
+  stroke: var(--brain-outline);
+  stroke-width: 2.4px;
+  stroke-linejoin: round;
+  transition: stroke 0.3s, fill 0.3s;
+}
+
+.brain-cortex-folds path {
+  fill: none;
+  stroke: var(--brain-folds);
+  stroke-width: 1.3px;
+  stroke-linecap: round;
+  transition: stroke 0.3s;
+}
+
+/* Neural pathways */
+.neural-pathway-group {
+  transition: opacity 0.6s ease;
+}
+
+.neural-line {
+  transition: opacity 0.6s ease, stroke-width 0.6s ease;
+}
+
+.neural-node {
+  transition: opacity 0.6s ease, r 0.6s ease;
+}
+
+/* Pulse animation on synapse nodes for 100+ day habits */
+@keyframes synapse-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.45);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .synapse-pulse {
+    animation: synapse-pulse 2.2s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+}
+
+/* Dimming & highlighting */
+.brain-svg-container.has-highlight .neural-pathway-group.is-dimmed {
+  opacity: 0.12 !important;
+}
+
+.brain-svg-container.has-highlight .neural-pathway-group.is-highlighted {
+  opacity: 1 !important;
+}
+
+.brain-svg-container.has-highlight .neural-pathway-group.is-highlighted .neural-main {
+  stroke-width: 4.8px !important;
+}
+
+/* Caption and scale below the brain */
+.brain-caption {
+  margin-top: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.brain-caption-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.brain-scale {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.brain-scale-line {
+  width: 24px;
+  height: 2px;
+  background: var(--border);
+  border-radius: 1px;
+}
+
+.brain-scale-tag {
+  white-space: nowrap;
+}
+
+/* Legend */
+.brain-legend-wrap {
+  flex: 0.85;
+  min-width: 0;
+  width: 100%;
+}
+
+.brain-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 0.2rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.brain-legend::-webkit-scrollbar {
+  width: 4px;
+}
+
+.brain-legend::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.brain-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.65rem;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.2s, background 0.2s, opacity 0.3s;
+}
+
+.brain-legend-row:hover {
+  background: var(--surface);
+  border-color: var(--accent-light);
+}
+
+.brain-legend-row:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.brain-legend-row.is-active {
+  background: var(--surface);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.brain-legend.has-highlight .brain-legend-row.is-dimmed {
+  opacity: 0.35;
+}
+
+.brain-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.brain-legend-name {
+  flex: 1;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.brain-legend-streak {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+/* Empty state message */
+.brain-empty-legend {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 1.5rem 0.5rem;
+  font-size: 0.9rem;
+  font-style: italic;
+}
